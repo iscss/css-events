@@ -15,7 +15,6 @@ const Footer = () => {
 
           <nav className="flex items-center gap-6">
             <Link to="/events" className="text-sm text-slate-500 hover:text-slate-700">Events</Link>
-            <Link to="/about" className="text-sm text-slate-500 hover:text-slate-700">About</Link>
             <a href="https://jobs.iscss.org" target="_blank" rel="noopener noreferrer" className="text-sm text-slate-500 hover:text-slate-700">CSS Jobs</a>
           </nav>
 

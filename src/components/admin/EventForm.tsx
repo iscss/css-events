@@ -32,7 +32,9 @@ const EventForm = ({ event, onSubmit, onCancel, loading }: EventFormProps) => {
   const [eventType, setEventType] = useState<EventType>('Q&A');
   const [location, setLocation] = useState('');
   const [isOnline, setIsOnline] = useState(false);
-  const [eventUrl, setEventUrl] = useState('');
+  const [eventExternalUrl, setEventExternalUrl] = useState('');
+  const [meetingUrl, setMeetingUrl] = useState('');
+  const [registrationUrl, setRegistrationUrl] = useState('');
   const [speaker, setSpeaker] = useState('');
   const [organizer, setOrganizer] = useState('');
   const [isPublished, setIsPublished] = useState(true);
@@ -46,7 +48,9 @@ const EventForm = ({ event, onSubmit, onCancel, loading }: EventFormProps) => {
       setEventType(event.event_type);
       setLocation(event.location || '');
       setIsOnline(event.is_online);
-      setEventUrl(event.event_url || '');
+      setEventExternalUrl(event.event_external_url || '');
+      setMeetingUrl(event.meeting_url || '');
+      setRegistrationUrl(event.registration_url || '');
       setSpeaker(event.speaker || '');
       setOrganizer(event.organizer || '');
       setIsPublished(event.is_published);
@@ -64,7 +68,9 @@ const EventForm = ({ event, onSubmit, onCancel, loading }: EventFormProps) => {
       event_type: eventType,
       location: location ? sanitizeInput(location, 500) : null,
       is_online: isOnline,
-      event_url: eventUrl ? sanitizeUrl(eventUrl) : null,
+      event_external_url: eventExternalUrl ? sanitizeUrl(eventExternalUrl) : null,
+      meeting_url: meetingUrl ? sanitizeUrl(meetingUrl) : null,
+      registration_url: registrationUrl ? sanitizeUrl(registrationUrl) : null,
       speaker: speaker ? sanitizeInput(speaker, 500) : null,
       organizer: organizer ? sanitizeInput(organizer, 500) : null,
       is_published: isPublished,
@@ -159,12 +165,34 @@ const EventForm = ({ event, onSubmit, onCancel, loading }: EventFormProps) => {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="eventUrl">Event URL (Zoom link, registration page, etc.)</Label>
+            <Label htmlFor="eventExternalUrl">Event Page URL (external page describing the event)</Label>
             <Input
-              id="eventUrl"
-              type="url"
-              value={eventUrl}
-              onChange={(e) => setEventUrl(e.target.value)}
+              id="eventExternalUrl"
+              type="text"
+              value={eventExternalUrl}
+              onChange={(e) => setEventExternalUrl(e.target.value)}
+              placeholder="https://..."
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="meetingUrl">Meeting URL (Zoom, Teams, etc.)</Label>
+            <Input
+              id="meetingUrl"
+              type="text"
+              value={meetingUrl}
+              onChange={(e) => setMeetingUrl(e.target.value)}
+              placeholder="https://zoom.us/j/..."
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="registrationUrl">Registration URL</Label>
+            <Input
+              id="registrationUrl"
+              type="text"
+              value={registrationUrl}
+              onChange={(e) => setRegistrationUrl(e.target.value)}
               placeholder="https://..."
             />
           </div>

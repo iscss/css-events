@@ -77,7 +77,7 @@ const EventCard = ({ event, onViewDetails }: EventCardProps) => {
               )}
             </div>
 
-            <div className="flex items-center gap-3 mt-4">
+            <div className="flex flex-wrap items-center gap-3 mt-4">
               {onViewDetails && (
                 <Button
                   variant="outline"
@@ -87,11 +87,19 @@ const EventCard = ({ event, onViewDetails }: EventCardProps) => {
                   View Details
                 </Button>
               )}
-              {event.event_url && (
-                <a href={event.event_url} target="_blank" rel="noopener noreferrer">
+              {event.registration_url && (
+                <a href={event.registration_url} target="_blank" rel="noopener noreferrer">
                   <Button size="sm" className="bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700">
                     <ExternalLink className="w-3 h-3 mr-1" />
                     Register
+                  </Button>
+                </a>
+              )}
+              {event.meeting_url && (
+                <a href={event.meeting_url} target="_blank" rel="noopener noreferrer">
+                  <Button size="sm" variant="outline" className="border-blue-200 text-blue-600 hover:bg-blue-50">
+                    <Globe className="w-3 h-3 mr-1" />
+                    Join Meeting
                   </Button>
                 </a>
               )}

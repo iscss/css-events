@@ -19,7 +19,9 @@ export type Database = {
           event_type: Database["public"]["Enums"]["event_type"]
           location: string | null
           is_online: boolean
-          event_url: string | null
+          event_external_url: string | null
+          meeting_url: string | null
+          registration_url: string | null
           speaker: string | null
           organizer: string | null
           is_published: boolean
@@ -36,7 +38,9 @@ export type Database = {
           event_type: Database["public"]["Enums"]["event_type"]
           location?: string | null
           is_online?: boolean
-          event_url?: string | null
+          event_external_url?: string | null
+          meeting_url?: string | null
+          registration_url?: string | null
           speaker?: string | null
           organizer?: string | null
           is_published?: boolean
@@ -53,7 +57,9 @@ export type Database = {
           event_type?: Database["public"]["Enums"]["event_type"]
           location?: string | null
           is_online?: boolean
-          event_url?: string | null
+          event_external_url?: string | null
+          meeting_url?: string | null
+          registration_url?: string | null
           speaker?: string | null
           organizer?: string | null
           is_published?: boolean

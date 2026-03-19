@@ -91,14 +91,32 @@ const EventDetailsModal = ({ event, open, onOpenChange }: EventDetailsModalProps
             </div>
           )}
 
-          {event.event_url && (
-            <div className="pt-2">
-              <a href={event.event_url} target="_blank" rel="noopener noreferrer">
-                <Button className="w-full bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700">
-                  <ExternalLink className="w-4 h-4 mr-2" />
-                  Register / Join Event
-                </Button>
-              </a>
+          {(event.registration_url || event.meeting_url || event.event_external_url) && (
+            <div className="pt-2 space-y-2">
+              {event.registration_url && (
+                <a href={event.registration_url} target="_blank" rel="noopener noreferrer">
+                  <Button className="w-full bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700">
+                    <ExternalLink className="w-4 h-4 mr-2" />
+                    Register
+                  </Button>
+                </a>
+              )}
+              {event.meeting_url && (
+                <a href={event.meeting_url} target="_blank" rel="noopener noreferrer">
+                  <Button variant="outline" className="w-full border-blue-200 text-blue-600 hover:bg-blue-50 mt-2">
+                    <Globe className="w-4 h-4 mr-2" />
+                    Join Meeting
+                  </Button>
+                </a>
+              )}
+              {event.event_external_url && (
+                <a href={event.event_external_url} target="_blank" rel="noopener noreferrer">
+                  <Button variant="outline" className="w-full mt-2">
+                    <ExternalLink className="w-4 h-4 mr-2" />
+                    Event Page
+                  </Button>
+                </a>
+              )}
             </div>
           )}
         </div>

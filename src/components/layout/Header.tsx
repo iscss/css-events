@@ -15,7 +15,6 @@ const Header = () => {
     { to: '/', label: 'Home' },
     { to: '/events', label: 'Events' },
     ...(isAdmin ? [{ to: '/admin', label: 'Admin' }] : []),
-    { to: '/about', label: 'About' },
   ];
 
   const isActive = (path: string) => location.pathname === path;

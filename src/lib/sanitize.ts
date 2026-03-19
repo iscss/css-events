@@ -22,7 +22,11 @@ export const sanitizeText = (text: string): string => {
 };
 
 export const sanitizeUrl = (url: string): string => {
-  const sanitized = sanitizeText(url);
+  let sanitized = sanitizeText(url).trim();
+  if (!sanitized) return '';
+  if (!/^https?:\/\//i.test(sanitized)) {
+    sanitized = 'https://' + sanitized;
+  }
   try {
     const urlObj = new URL(sanitized);
     if (urlObj.protocol === 'http:' || urlObj.protocol === 'https:') {
