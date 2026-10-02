@@ -1,62 +1,215 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import EventCard from '@/components/events/EventCard';
 import EventDetailsModal from '@/components/events/EventDetailsModal';
 import EventFilters from '@/components/events/EventFilters';
+import MiniCalendar from '@/components/events/MiniCalendar';
 import { useEvents, type EventFilters as EventFiltersType } from '@/hooks/useEvents';
 import { Calendar } from 'lucide-react';
+import { format, isSameDay } from 'date-fns';
 import type { Tables } from '@/integrations/supabase/types';
 
 type Event = Tables<'events'>;
 
+// Upcoming IC²S² conferences not yet in the DB — remove an entry once added via /admin
+const UPCOMING_IC2S2: Event[] = [
+  {
+    id: 'ic2s2-2026',
+    title: '12th IC²S² — International Conference on Computational Social Science',
+    description: 'The 12th International Conference on Computational Social Science will be hosted in Burlington, Vermont, USA. IC²S² is the flagship annual conference of ISCSS, bringing together researchers from sociology, economics, political science, computer science, and beyond.',
+    event_date: '2026-07-28T09:00:00Z',
+    end_date: '2026-07-31T18:00:00Z',
+    event_type: 'Conference' as const,
+    location: 'Burlington, Vermont, USA',
+    is_online: false,
+    registration_url: 'https://2026.ic2s2.net',
+    event_external_url: 'https://2026.ic2s2.net',
+    meeting_url: null,
+    speaker: null,
+    organizer: 'ISCSS / Vermont Complex Systems Institute',
+    is_published: true,
+    posted_by: null,
+    created_at: '',
+    updated_at: '',
+  },
+];
+
+const TOP_TABS = ['All', 'Talks', 'Workshops', 'Seminars', 'Conferences'];
+
+const TAB_TO_TYPE: Record<string, string> = {
+  'Talks': 'Talk',
+  'Workshops': 'Workshop',
+  'Seminars': 'Seminar',
+  'Conferences': 'Conference',
+};
+
 const Events = () => {
   const [filters, setFilters] = useState<EventFiltersType>({});
-  const { data: events, isLoading } = useEvents(filters);
+  const [activeTab, setActiveTab] = useState('All');
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [viewMode, setViewMode] = useState<'list' | 'calendar'>('list');
+
+  const { data: events, isLoading } = useEvents(filters);
+
+  const filtered = useMemo(() => {
+    const dbUrls = new Set((events ?? []).map((e) => e.event_external_url).filter(Boolean));
+    const synthetic = UPCOMING_IC2S2.filter((e) => !dbUrls.has(e.event_external_url));
+    let result: Event[] = [...(events ?? []), ...synthetic].sort(
+      (a, b) => new Date(a.event_date).getTime() - new Date(b.event_date).getTime()
+    );
+
+    // Tab filter
+    if (activeTab !== 'All') {
+      const type = TAB_TO_TYPE[activeTab];
+      if (type) result = result.filter((e) => e.event_type === type);
+    }
+
+    // Sidebar event type checkboxes
+    if (filters.eventTypes && filters.eventTypes.length > 0) {
+      result = result.filter((e) => filters.eventTypes!.includes(e.event_type));
+    }
+
+    // Calendar date filter
+    if (selectedDate) {
+      result = result.filter((e) => isSameDay(new Date(e.event_date), selectedDate));
+    }
+
+    return result;
+  }, [events, activeTab, filters, selectedDate]);
+
+  const eventDates = useMemo(() => {
+    const dbUrls = new Set((events ?? []).map((e) => e.event_external_url).filter(Boolean));
+    const synthetic = UPCOMING_IC2S2.filter((e) => !dbUrls.has(e.event_external_url));
+    return [...(events ?? []), ...synthetic].map((e) => new Date(e.event_date));
+  }, [events]);
+
+  // Group by month
+  const groupedByMonth = useMemo(() => {
+    const groups: { label: string; events: Event[] }[] = [];
+    for (const event of filtered) {
+      const label = format(new Date(event.event_date), 'MMMM yyyy').toUpperCase();
+      const last = groups[groups.length - 1];
+      if (last && last.label === label) {
+        last.events.push(event);
+      } else {
+        groups.push({ label, events: [event] });
+      }
+    }
+    return groups;
+  }, [filtered]);
 
   return (
-    <div className="page-wrapper">
+    <div className="page-wrapper bg-white">
       <Header />
-      <main className="main-content">
-        <section className="bg-gradient-to-br from-slate-50 to-indigo-50 pt-12 pb-8">
-          <div className="container mx-auto px-4">
-            <h1 className="text-4xl md:text-5xl font-bold text-slate-800 mb-2">
-              All <span className="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">Events</span>
-            </h1>
-            <p className="text-slate-500 mb-8">Browse upcoming events in computational social science</p>
-            <EventFilters filters={filters} onFiltersChange={setFilters} />
-          </div>
-        </section>
 
-        <section className="py-8">
-          <div className="container mx-auto px-4">
+      <main className="main-content">
+        {/* Page header */}
+        <div className="border-b border-slate-100 px-8 pt-8 pb-6">
+          <p className="font-semibold mb-2" style={{ fontSize: '10px', letterSpacing: '0.12em', textTransform: 'uppercase', color: '#888' }}>
+            Lab Events
+          </p>
+          <h1 className="text-3xl font-bold mb-1" style={{ color: '#0e1f6b' }}>
+            Talks, Workshops{' '}
+            <span style={{ color: '#00c4b4' }}>&amp;</span>{' '}
+            <span style={{ color: '#00c4b4' }}>Seminars</span>
+          </h1>
+          <p style={{ fontSize: '13px', color: '#666' }}>
+            Advancing data-driven research in the social sciences — talks, workshops, and reading groups from ISCSS members worldwide.
+          </p>
+
+          {/* Top tab pills + List/Calendar toggle */}
+          <div className="flex items-center justify-between mt-5">
+            <div className="flex items-center gap-2 flex-wrap">
+              {TOP_TABS.map((tab) => (
+                <button
+                  key={tab}
+                  onClick={() => setActiveTab(tab)}
+                  className="px-4 py-1 rounded-full text-xs font-medium border transition-colors"
+                  style={activeTab === tab
+                    ? { backgroundColor: '#0e1f6b', color: '#fff', borderColor: '#0e1f6b' }
+                    : { backgroundColor: 'transparent', color: '#0e1f6b', borderColor: '#0e1f6b' }}
+                >
+                  {tab}
+                </button>
+              ))}
+            </div>
+
+            {/* List / Calendar toggle */}
+            <div className="flex overflow-hidden text-xs">
+              <button
+                onClick={() => setViewMode('list')}
+                className="px-3 py-1 border transition-colors"
+                style={viewMode === 'list'
+                  ? { backgroundColor: '#f4f6fb', color: '#0e1f6b', borderColor: '#0e1f6b', borderRadius: '6px 0 0 6px' }
+                  : { backgroundColor: 'transparent', color: '#888', borderColor: '#ccc', borderRadius: '6px 0 0 6px' }}
+              >
+                List
+              </button>
+              <button
+                onClick={() => setViewMode('calendar')}
+                className="px-3 py-1 border-t border-b border-r transition-colors"
+                style={viewMode === 'calendar'
+                  ? { backgroundColor: '#f4f6fb', color: '#0e1f6b', borderColor: '#0e1f6b', borderRadius: '0 6px 6px 0' }
+                  : { backgroundColor: 'transparent', color: '#888', borderColor: '#ccc', borderRadius: '0 6px 6px 0' }}
+              >
+                Calendar
+              </button>
+            </div>
+          </div>
+        </div>
+
+
+        {/* Body: sidebar + event list */}
+        <div className="flex">
+          {/* Left sidebar */}
+          <aside className="w-52 flex-shrink-0 border-r border-slate-100 px-4 py-6 space-y-6">
+            {/* Mini calendar */}
+            <MiniCalendar
+              selectedDate={selectedDate}
+              highlightedDates={eventDates}
+              onSelectDate={setSelectedDate}
+            />
+
+            {/* Filters */}
+            <EventFilters filters={filters} onFiltersChange={setFilters} />
+          </aside>
+
+          {/* Event list */}
+          <div className="flex-1 min-w-0 px-8 py-4">
             {isLoading ? (
-              <div className="grid gap-4">
+              <div className="space-y-4 pt-4">
                 {[1, 2, 3, 4].map((i) => (
-                  <div key={i} className="h-32 rounded-2xl bg-slate-100 animate-pulse" />
+                  <div key={i} className="h-24 rounded bg-slate-100 animate-pulse" />
                 ))}
               </div>
-            ) : events && events.length > 0 ? (
-              <div className="grid gap-4">
-                {events.map((event) => (
-                  <EventCard key={event.id} event={event} onViewDetails={setSelectedEvent} />
-                ))}
-              </div>
+            ) : filtered.length > 0 ? (
+              groupedByMonth.map(({ label, events: monthEvents }) => (
+                <div key={label}>
+                  <p className="font-semibold pt-3 pb-2 mb-2" style={{ fontSize: '10px', letterSpacing: '0.1em', textTransform: 'uppercase', color: '#aaa', borderBottom: '0.5px solid #e5e7eb' }}>
+                    {label}
+                  </p>
+                  {monthEvents.map((event) => (
+                    <EventCard key={event.id} event={event} onViewDetails={setSelectedEvent} />
+                  ))}
+                </div>
+              ))
             ) : (
-              <div className="text-center py-20">
-                <Calendar className="w-16 h-16 text-slate-300 mx-auto mb-4" />
-                <h3 className="text-xl font-semibold text-slate-700 mb-2">No events found</h3>
-                <p className="text-slate-500">
-                  {Object.keys(filters).length > 0
-                    ? 'Try adjusting your filters to see more events.'
+              <div className="text-center py-24">
+                <Calendar className="w-12 h-12 text-slate-300 mx-auto mb-3" />
+                <h3 className="text-base font-semibold text-slate-700 mb-1">No events found</h3>
+                <p className="text-sm text-slate-500">
+                  {Object.keys(filters).length > 0 || activeTab !== 'All' || selectedDate
+                    ? 'Try adjusting your filters.'
                     : 'Check back soon for upcoming events.'}
                 </p>
               </div>
             )}
           </div>
-        </section>
+        </div>
       </main>
+
       <Footer />
 
       <EventDetailsModal

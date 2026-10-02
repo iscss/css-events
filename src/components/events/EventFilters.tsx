@@ -1,7 +1,3 @@
-import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Button } from '@/components/ui/button';
-import { Search, X } from 'lucide-react';
 import type { EventFilters as EventFiltersType } from '@/hooks/useEvents';
 
 interface EventFiltersProps {
@@ -9,73 +5,46 @@ interface EventFiltersProps {
   onFiltersChange: (filters: EventFiltersType) => void;
 }
 
-const EVENT_TYPES = ['Q&A', 'Workshop', 'Seminar', 'Conference', 'Social', 'Other'];
+const EVENT_TYPES = [
+  { label: 'Q&A',        color: '#0e1f6b' },
+  { label: 'Workshop',   color: '#00c4b4' },
+  { label: 'Seminar',    color: '#5a7fd4' },
+  { label: 'Conference', color: '#f5d547' },
+  { label: 'Social',     color: '#f97316' },
+  { label: 'Other',      color: '#aab4c8' },
+];
 
 const EventFilters = ({ filters, onFiltersChange }: EventFiltersProps) => {
-  const hasActiveFilters = filters.eventType || filters.isOnline !== undefined || filters.search;
-
-  const clearFilters = () => {
-    onFiltersChange({});
+  const toggleEventType = (type: string) => {
+    const current = filters.eventTypes ?? [];
+    const next = current.includes(type)
+      ? current.filter((t) => t !== type)
+      : [...current, type];
+    onFiltersChange({ ...filters, eventTypes: next.length ? next : undefined });
   };
 
   return (
-    <div className="flex flex-col sm:flex-row gap-3">
-      {/* Search */}
-      <div className="relative flex-1">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-        <Input
-          placeholder="Search events..."
-          value={filters.search || ''}
-          onChange={(e) => onFiltersChange({ ...filters, search: e.target.value || undefined })}
-          className="pl-10"
-        />
+    <div>
+      <p className="font-semibold mb-2" style={{ fontSize: '9px', letterSpacing: '0.1em', textTransform: 'uppercase', color: '#aaa' }}>
+        Event type
+      </p>
+      <div className="space-y-2">
+        {EVENT_TYPES.map(({ label, color }) => {
+          const checked = (filters.eventTypes ?? []).includes(label);
+          return (
+            <label key={label} className="flex items-center gap-2 cursor-pointer">
+              <span className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ backgroundColor: color }} />
+              <span className="flex-1" style={{ fontSize: '11px', color: '#555' }}>{label}</span>
+              <input
+                type="checkbox"
+                checked={checked}
+                onChange={() => toggleEventType(label)}
+                className="w-3.5 h-3.5 accent-slate-700"
+              />
+            </label>
+          );
+        })}
       </div>
-
-      {/* Event type */}
-      <Select
-        value={filters.eventType || 'all'}
-        onValueChange={(value) =>
-          onFiltersChange({ ...filters, eventType: value === 'all' ? undefined : value })
-        }
-      >
-        <SelectTrigger className="w-full sm:w-44">
-          <SelectValue placeholder="Event Type" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="all">All Types</SelectItem>
-          {EVENT_TYPES.map((type) => (
-            <SelectItem key={type} value={type}>{type}</SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
-
-      {/* Online filter */}
-      <Select
-        value={filters.isOnline === undefined ? 'all' : filters.isOnline ? 'online' : 'in-person'}
-        onValueChange={(value) =>
-          onFiltersChange({
-            ...filters,
-            isOnline: value === 'all' ? undefined : value === 'online',
-          })
-        }
-      >
-        <SelectTrigger className="w-full sm:w-40">
-          <SelectValue placeholder="Format" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="all">All Formats</SelectItem>
-          <SelectItem value="online">Online</SelectItem>
-          <SelectItem value="in-person">In-Person</SelectItem>
-        </SelectContent>
-      </Select>
-
-      {/* Clear filters */}
-      {hasActiveFilters && (
-        <Button variant="ghost" size="sm" onClick={clearFilters} className="text-slate-500">
-          <X className="w-4 h-4 mr-1" />
-          Clear
-        </Button>
-      )}
     </div>
   );
 };
