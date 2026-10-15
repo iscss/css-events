@@ -49,7 +49,6 @@ const Events = () => {
   const [activeTab, setActiveTab] = useState('All');
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
-  const [viewMode, setViewMode] = useState<'list' | 'calendar'>('list');
 
   const { data: events, isLoading } = useEvents(filters);
 
@@ -119,8 +118,8 @@ const Events = () => {
             Advancing data-driven research in the social sciences — talks, workshops, and reading groups from ISCSS members worldwide.
           </p>
 
-          {/* Top tab pills + List/Calendar toggle */}
-          <div className="flex items-center justify-between mt-5">
+          {/* Top tab pills */}
+          <div className="mt-5">
             <div className="flex items-center gap-2 flex-wrap">
               {TOP_TABS.map((tab) => (
                 <button
@@ -134,28 +133,6 @@ const Events = () => {
                   {tab}
                 </button>
               ))}
-            </div>
-
-            {/* List / Calendar toggle */}
-            <div className="flex overflow-hidden text-xs">
-              <button
-                onClick={() => setViewMode('list')}
-                className="px-3 py-1 border transition-colors"
-                style={viewMode === 'list'
-                  ? { backgroundColor: '#f4f6fb', color: '#0e1f6b', borderColor: '#0e1f6b', borderRadius: '6px 0 0 6px' }
-                  : { backgroundColor: 'transparent', color: '#888', borderColor: '#ccc', borderRadius: '6px 0 0 6px' }}
-              >
-                List
-              </button>
-              <button
-                onClick={() => setViewMode('calendar')}
-                className="px-3 py-1 border-t border-b border-r transition-colors"
-                style={viewMode === 'calendar'
-                  ? { backgroundColor: '#f4f6fb', color: '#0e1f6b', borderColor: '#0e1f6b', borderRadius: '0 6px 6px 0' }
-                  : { backgroundColor: 'transparent', color: '#888', borderColor: '#ccc', borderRadius: '0 6px 6px 0' }}
-              >
-                Calendar
-              </button>
             </div>
           </div>
         </div>
