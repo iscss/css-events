@@ -1,5 +1,4 @@
 import type { EventFilters as EventFiltersType } from '@/hooks/useEvents';
-import { EVENT_FORMATS } from '@/lib/eventFormat';
 
 interface EventFiltersProps {
   filters: EventFiltersType;
@@ -13,6 +12,12 @@ const EVENT_TYPES = [
   { label: 'Conference', color: '#f5d547' },
   { label: 'Social',     color: '#f97316' },
   { label: 'Other',      color: '#aab4c8' },
+];
+
+const EVENT_FORMATS = [
+  { label: 'Online',    color: '#00796b' },
+  { label: 'In-Person', color: '#8b5cf6' },
+  { label: 'Hybrid',    color: '#ec4899' },
 ];
 
 const EventFilters = ({ filters, onFiltersChange }: EventFiltersProps) => {
@@ -59,16 +64,17 @@ const EventFilters = ({ filters, onFiltersChange }: EventFiltersProps) => {
 
       <div>
         <p className="font-semibold mb-2" style={{ fontSize: '9px', letterSpacing: '0.1em', textTransform: 'uppercase', color: '#aaa' }}>
-          Format
+          Event format
         </p>
         <div className="space-y-2">
-          {EVENT_FORMATS.map((format) => (
-            <label key={format} className="flex items-center gap-2 cursor-pointer">
-              <span className="flex-1" style={{ fontSize: '11px', color: '#555' }}>{format}</span>
+          {EVENT_FORMATS.map(({ label, color }) => (
+            <label key={label} className="flex items-center gap-2 cursor-pointer">
+              <span className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ backgroundColor: color }} />
+              <span className="flex-1" style={{ fontSize: '11px', color: '#555' }}>{label}</span>
               <input
                 type="checkbox"
-                checked={(filters.formats ?? []).includes(format)}
-                onChange={() => toggleFormat(format)}
+                checked={(filters.formats ?? []).includes(label)}
+                onChange={() => toggleFormat(label)}
                 className="w-3.5 h-3.5 accent-slate-700"
               />
             </label>
