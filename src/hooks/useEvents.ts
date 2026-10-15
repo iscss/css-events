@@ -35,7 +35,7 @@ export const useEvents = (_filters?: EventFilters) => {
   });
 };
 
-export const useUpcomingEvents = (limit: number = 6) => {
+export const useUpcomingEvents = (limit: number = 4) => {
   // Reuses the same ['events'] cache — no extra network request
   const { data, ...rest } = useQuery({
     queryKey: ['events'],
@@ -53,7 +53,13 @@ export const useUpcomingEvents = (limit: number = 6) => {
     gcTime: 10 * 60 * 1000,
   });
 
-  return { data: data?.slice(0, limit), ...rest };
+  // Next events to happen: skip anything that has already ended
+  const now = Date.now();
+  const upcoming = data
+    ?.filter((e) => new Date(e.end_date ?? e.event_date).getTime() >= now)
+    .slice(0, limit);
+
+  return { data: upcoming, ...rest };
 };
 
 export const usePastConferences = () => {

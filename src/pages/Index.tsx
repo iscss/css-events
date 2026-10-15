@@ -33,15 +33,17 @@ const UPCOMING_IC2S2: Event[] = [
 ];
 
 const Index = () => {
-  const { data: dbEvents, isLoading } = useUpcomingEvents(6);
+  const { data: dbEvents, isLoading } = useUpcomingEvents(4);
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
 
   const events = useMemo(() => {
     const dbUrls = new Set((dbEvents ?? []).map((e) => e.event_external_url).filter(Boolean));
     const synthetic = UPCOMING_IC2S2.filter((e) => !dbUrls.has(e.event_external_url));
+    const now = Date.now();
     return [...(dbEvents ?? []), ...synthetic]
+      .filter((e) => new Date(e.end_date ?? e.event_date).getTime() >= now)
       .sort((a, b) => new Date(a.event_date).getTime() - new Date(b.event_date).getTime())
-      .slice(0, 6);
+      .slice(0, 4);
   }, [dbEvents]);
 
   return (
