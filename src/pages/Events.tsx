@@ -35,14 +35,7 @@ const UPCOMING_IC2S2: Event[] = [
   },
 ];
 
-const TOP_TABS = ['All', 'Talks', 'Workshops', 'Seminars', 'Conferences'];
-
-const TAB_TO_TYPE: Record<string, string> = {
-  'Talks': 'Talk',
-  'Workshops': 'Workshop',
-  'Seminars': 'Seminar',
-  'Conferences': 'Conference',
-};
+const TOP_TABS = ['All', 'Upcoming', 'Past'];
 
 const Events = () => {
   const [filters, setFilters] = useState<EventFiltersType>({});
@@ -59,10 +52,11 @@ const Events = () => {
       (a, b) => new Date(a.event_date).getTime() - new Date(b.event_date).getTime()
     );
 
-    // Tab filter
+    // Tab filter: an event counts as past once its end (or start, if no end) has passed
     if (activeTab !== 'All') {
-      const type = TAB_TO_TYPE[activeTab];
-      if (type) result = result.filter((e) => e.event_type === type);
+      const now = Date.now();
+      const hasEnded = (e: Event) => new Date(e.end_date ?? e.event_date).getTime() < now;
+      result = result.filter((e) => (activeTab === 'Past' ? hasEnded(e) : !hasEnded(e)));
     }
 
     // Sidebar event type checkboxes
