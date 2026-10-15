@@ -33,7 +33,7 @@ npm run build
 An events listing site for the **Computational Social Science** community. Sister site to [CSS Jobs](https://jobs.iscss.org) — same Supabase project, same auth, same admin users.
 
 - **Public visitors:** Browse upcoming events, filter by type/format, view event details
-- **Admins:** Create, edit, publish/unpublish, and delete events directly (no approval workflow)
+- **Admins:** Add, edit, publish/unpublish, and delete events directly in the Supabase dashboard (no admin pages on the site, no approval workflow)
 
 ### Event Types
 
@@ -60,16 +60,14 @@ Q&A, Workshop, Seminar, Conference, Social, Other
 ```
 css-events/
 ├── src/
-│   ├── pages/              # 5 route pages (Index, Events, Auth, Admin, NotFound)
+│   ├── pages/              # Route pages (Index, Events, PastEvents, About, Contact, NotFound)
 │   ├── components/
-│   │   ├── admin/          # EventForm, EventManagementTable
 │   │   ├── events/         # EventCard, EventDetailsModal, EventFilters
 │   │   ├── layout/         # Header, Footer
 │   │   └── ui/             # shadcn/ui components (shared with css-jobs)
-│   ├── hooks/              # useEvents (CRUD), useAdminCheck, useUserProfile, etc.
-│   ├── contexts/           # AuthContext for session management
+│   ├── hooks/              # useEvents (read-only)
 │   ├── integrations/       # Supabase client + types
-│   └── lib/                # Utilities (sanitize, rate-limit, utils)
+│   └── lib/                # Utilities (sanitize, utils)
 ├── supabase/
 │   └── migrations/         # SQL migrations for events table
 ├── public/                 # Static assets (team photos, favicon)
@@ -82,9 +80,8 @@ css-events/
 
 CSS Events shares the **same Supabase project** as CSS Jobs (`ukkqeczgommifgecyrez`). This means:
 
-- **Same auth:** Users who sign up on jobs.iscss.org can sign in on events.iscss.org (and vice versa)
-- **Same `user_profiles` table:** The `is_admin` flag works across both sites
-- **Same admin users:** Anyone who is an admin on CSS Jobs is also an admin on CSS Events
+- **Same project:** This site has no sign-in of its own; the shared auth tables are used by CSS Jobs
+- **Same `user_profiles` table:** Still used by the database's admin-only permissions on `events`
 - **Separate `events` table:** Events data is independent from jobs data
 - **Separate codebase:** UI components were copied (not shared) so the two apps can diverge independently
 
@@ -132,7 +129,7 @@ These are public/client-safe keys. Get them from: [Supabase Dashboard](https://s
 ### Row-Level Security (RLS)
 
 - **Public:** Can read published events
-- **Admins:** Full CRUD (insert, update, delete, read all including unpublished)
+- **Admins:** Manage events in the Supabase dashboard (which bypasses RLS)
 
 ### Migrations
 
@@ -156,34 +153,32 @@ npx supabase db push
 |-------|------|-------------|
 | `/` | Home | Hero section + next 6 upcoming events |
 | `/events` | Events | Full listing with search, type, and online/in-person filters |
-| `/admin` | Admin | Create/edit/delete events (admin only) |
-| `/auth` | Auth | Sign in / sign up (same accounts as CSS Jobs) |
 
 ---
 
-## Admin
+## Adding and Editing Events
 
-### Access
+The site has no admin pages or sign-in. Events are managed directly in the Supabase dashboard (account: `admin@iscss.org`).
 
-Admins are determined by `is_admin = true` in the `user_profiles` table. Since auth is shared with CSS Jobs, existing admins already have access.
+1. Open the Supabase dashboard and go to **Table Editor → events**
+2. Click **Insert → Insert row** (or click a cell to edit an existing row)
+3. Fill in the fields below and save
+4. The event appears on the site within ~5 minutes (the site caches the event list)
 
-### Setting a New Admin
+| Column | Notes |
+|--------|-------|
+| `title` | Required |
+| `event_date` | Required. Start date/time. Enter in UTC (e.g. `2026-11-05 15:00:00+00`) |
+| `event_type` | Required. One of: `Q&A`, `Workshop`, `Seminar`, `Conference`, `Social`, `Other` |
+| `description`, `speaker`, `organizer`, `location` | Optional text |
+| `end_date` | Optional |
+| `is_online` | `true` for virtual events |
+| `event_external_url`, `meeting_url`, `registration_url` | Optional links (event page, Zoom/meeting link, sign-up) |
+| `is_published` | **Must be `true` for the event to show.** Default is `false` (draft) |
 
-```sql
--- Run in Supabase SQL Editor
-UPDATE user_profiles
-SET is_admin = true
-WHERE email = 'new-admin@example.com';
-```
+Leave `id`, `created_at`, `updated_at`, and `posted_by` blank. To hide or remove an event, set `is_published` to `false` or delete the row.
 
-### Event Workflow
-
-There is no approval workflow — admins post events directly:
-
-1. Admin signs in, goes to `/admin`
-2. Clicks "New Event", fills in the form
-3. If "Published" is toggled on, the event immediately appears on the public site
-4. Events can be toggled between published/draft, edited, or deleted at any time
+Row-Level Security on the `events` table means the public site can only read published events. Dashboard edits are not affected by it.
 
 ---
 
@@ -225,6 +220,5 @@ npx vitest run   # Run tests
 
 - **Input sanitization** via DOMPurify (`src/lib/sanitize.ts`) — all user inputs sanitized before storage, URLs auto-prefixed with `https://` if no protocol provided
 - **Row-Level Security** on the `events` table — public reads published only, admin CRUD
-- **Rate limiting** on auth attempts (`src/lib/rate-limit.ts`)
 - **Content Security Policy** headers in both `vercel.json` (production) and `vite.config.ts` (development)
 - **CORS:** Supabase client connects only to the project's own endpoint

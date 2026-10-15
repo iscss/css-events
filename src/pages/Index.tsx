@@ -9,7 +9,7 @@ import type { Tables } from '@/integrations/supabase/types';
 
 type Event = Tables<'events'>;
 
-// Remove entry once added to DB via /admin
+// Remove entry once added to the events table in Supabase
 const UPCOMING_IC2S2: Event[] = [
   {
     id: 'ic2s2-2026',
