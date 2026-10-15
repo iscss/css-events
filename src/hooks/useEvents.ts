@@ -9,6 +9,7 @@ export interface EventFilters {
   eventTypes?: string[];
   affiliatedSchools?: string[];
   isOnline?: boolean;
+  formats?: string[];
   dateFrom?: string;
   dateTo?: string;
   search?: string;

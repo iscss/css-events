@@ -7,6 +7,7 @@ import EventFilters from '@/components/events/EventFilters';
 import MiniCalendar from '@/components/events/MiniCalendar';
 import { useEvents, type EventFilters as EventFiltersType } from '@/hooks/useEvents';
 import { Calendar } from 'lucide-react';
+import { getEventFormat } from '@/lib/eventFormat';
 import { format, isSameDay } from 'date-fns';
 import type { Tables } from '@/integrations/supabase/types';
 
@@ -62,6 +63,11 @@ const Events = () => {
     // Sidebar event type checkboxes
     if (filters.eventTypes && filters.eventTypes.length > 0) {
       result = result.filter((e) => filters.eventTypes!.includes(e.event_type));
+    }
+
+    // Sidebar format checkboxes (Online / In-Person / Hybrid)
+    if (filters.formats && filters.formats.length > 0) {
+      result = result.filter((e) => filters.formats!.includes(getEventFormat(e)));
     }
 
     // Calendar date filter

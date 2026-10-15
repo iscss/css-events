@@ -176,6 +176,8 @@ The site has no admin pages or sign-in. Events are managed directly in the Supab
 | `event_external_url`, `meeting_url`, `registration_url` | Optional links (event page, Zoom/meeting link, sign-up) |
 | `is_published` | **Must be `true` for the event to show.** Default is `false` (draft) |
 
+**Format filter:** the site shows Online / In-Person / Hybrid. There's no separate column for it. `is_online = false` means In-Person; `is_online = true` with a location like "Online (Zoom)" means Online; `is_online = true` with a real place in `location` (e.g. "Room 301, Penn") means Hybrid.
+
 Leave `id`, `created_at`, `updated_at`, and `posted_by` blank. To hide or remove an event, set `is_published` to `false` or delete the row.
 
 Row-Level Security on the `events` table means the public site can only read published events. Dashboard edits are not affected by it.
