@@ -9,7 +9,7 @@ import MiniCalendar from '@/components/events/MiniCalendar';
 import { useEvents, type EventFilters as EventFiltersType } from '@/hooks/useEvents';
 import { Calendar } from 'lucide-react';
 import { getEventFormat } from '@/lib/eventFormat';
-import { format, isSameDay } from 'date-fns';
+import { format, isSameDay, isValid, parse } from 'date-fns';
 import type { Tables } from '@/integrations/supabase/types';
 
 type Event = Tables<'events'>;
@@ -40,15 +40,54 @@ const UPCOMING_IC2S2: Event[] = [
 const TOP_TABS = ['All', 'Upcoming', 'Past'];
 
 const Events = () => {
-  const [filters, setFilters] = useState<EventFiltersType>({});
-  // The tab lives in the URL (?tab=upcoming|past) so the header menu can link straight to it
+  // Every filter lives in the URL (?tab=, ?date=, ?type=, ?format=) so a filtered view
+  // can be bookmarked, shared, and undone with the browser's back button.
   const [searchParams, setSearchParams] = useSearchParams();
+  const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
+
+  const updateParams = (change: (params: URLSearchParams) => void) => {
+    const next = new URLSearchParams(searchParams);
+    change(next);
+    setSearchParams(next);
+  };
+
   const tabParam = searchParams.get('tab');
   const activeTab = tabParam === 'upcoming' ? 'Upcoming' : tabParam === 'past' ? 'Past' : 'All';
   const setActiveTab = (tab: string) =>
-    setSearchParams(tab === 'All' ? {} : { tab: tab.toLowerCase() });
-  const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
-  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+    updateParams((p) => (tab === 'All' ? p.delete('tab') : p.set('tab', tab.toLowerCase())));
+
+  const dateParam = searchParams.get('date');
+  const selectedDate = useMemo(() => {
+    if (!dateParam) return null;
+    const parsed = parse(dateParam, 'yyyy-MM-dd', new Date());
+    return isValid(parsed) ? parsed : null;
+  }, [dateParam]);
+  const setSelectedDate = (date: Date | null) =>
+    updateParams((p) => (date ? p.set('date', format(date, 'yyyy-MM-dd')) : p.delete('date')));
+
+  const typeParams = searchParams.getAll('type');
+  const formatParams = searchParams.getAll('format');
+  const filters: EventFiltersType = useMemo(
+    () => ({
+      eventTypes: typeParams.length ? typeParams : undefined,
+      formats: formatParams.length ? formatParams : undefined,
+    }),
+    [typeParams.join('|'), formatParams.join('|')]
+  );
+  const setFilters = (next: EventFiltersType) =>
+    updateParams((p) => {
+      p.delete('type');
+      p.delete('format');
+      next.eventTypes?.forEach((t) => p.append('type', t));
+      next.formats?.forEach((f) => p.append('format', f));
+    });
+
+  const appliedFilters = [
+    ...(activeTab !== 'All' ? [activeTab] : []),
+    ...(selectedDate ? [format(selectedDate, 'MMM d, yyyy')] : []),
+    ...typeParams,
+    ...formatParams,
+  ];
 
   const { data: events, isLoading } = useEvents(filters);
 
@@ -161,6 +200,23 @@ const Events = () => {
 
           {/* Event list */}
           <div className="flex-1 min-w-0 px-8 py-4">
+            {appliedFilters.length > 0 && (
+              <div
+                className="flex items-center justify-between gap-3 rounded px-3 py-2 mb-2"
+                style={{ backgroundColor: '#f4f6fb', border: '0.5px solid #d9deea', fontSize: '12px', color: '#0e1f6b' }}
+              >
+                <span>
+                  <strong>Filtered:</strong> {appliedFilters.join(' · ')}
+                  <span style={{ color: '#666' }}> — {filtered.length} {filtered.length === 1 ? 'event' : 'events'}</span>
+                </span>
+                <button
+                  onClick={() => setSearchParams({})}
+                  className="font-semibold underline underline-offset-2 hover:no-underline"
+                >
+                  Clear all
+                </button>
+              </div>
+            )}
             {isLoading ? (
               <div className="space-y-4 pt-4">
                 {[1, 2, 3, 4].map((i) => (
@@ -183,7 +239,7 @@ const Events = () => {
                 <Calendar className="w-12 h-12 text-slate-300 mx-auto mb-3" />
                 <h3 className="text-base font-semibold text-slate-700 mb-1">No events found</h3>
                 <p className="text-sm text-slate-500">
-                  {Object.keys(filters).length > 0 || activeTab !== 'All' || selectedDate
+                  {appliedFilters.length > 0
                     ? 'Try adjusting your filters.'
                     : 'Check back soon for upcoming events.'}
                 </p>
