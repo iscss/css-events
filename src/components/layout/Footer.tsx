@@ -12,7 +12,7 @@ const Footer = () => {
         </div>
 
         <nav className="flex items-center gap-5">
-          <Link to="/events" style={{ fontSize: '11px', color: '#555' }} className="hover:text-slate-800">Events</Link>
+          <Link to="/" style={{ fontSize: '11px', color: '#555' }} className="hover:text-slate-800">Events</Link>
           <a href="https://jobs.iscss.org" target="_blank" rel="noopener noreferrer" style={{ fontSize: '11px', color: '#555' }} className="hover:text-slate-800">CSS Jobs</a>
           <a href="https://iscss.org" target="_blank" rel="noopener noreferrer" style={{ fontSize: '11px', color: '#555' }} className="hover:text-slate-800">iscss.org</a>
         </nav>

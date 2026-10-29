@@ -1,26 +1,26 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, ChevronDown } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
 
-const EVENTS_ITEMS = [
-  { to: '/events', label: 'Upcoming Events' },
-  { to: '/past-events', label: 'Past Events' },
+const MENU_ITEMS = [
+  { to: '/?tab=upcoming', label: 'Upcoming Events' },
+  { to: '/?tab=past', label: 'Past Events' },
 ];
 
 const Header = () => {
   const location = useLocation();
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [eventsOpen, setEventsOpen] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
 
-  const isEventsActive = EVENTS_ITEMS.some((i) => location.pathname === i.to);
-  const isActive = (path: string) => location.pathname === path;
+  const currentTab = new URLSearchParams(location.search).get('tab');
+  const isActive = (to: string) =>
+    location.pathname === '/' && to === `/?tab=${currentTab}`;
 
-  // Close dropdown on outside click
+  // Close the menu on outside click
   useEffect(() => {
     const handler = (e: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
-        setEventsOpen(false);
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+        setMenuOpen(false);
       }
     };
     document.addEventListener('mousedown', handler);
@@ -35,86 +35,36 @@ const Header = () => {
           ISCSS
         </Link>
 
-        {/* Desktop nav */}
-        <nav className="hidden md:flex items-center gap-7">
-
-          <Link
-            to="/"
-            className="text-xs font-medium transition-colors hover:text-white"
-            style={isActive('/')
-              ? { color: '#fff', borderBottom: '2px solid #f5d547', paddingBottom: '2px' }
-              : { color: 'rgba(255,255,255,0.8)' }}
+        <div className="relative" ref={menuRef}>
+          <button
+            onClick={() => setMenuOpen((o) => !o)}
+            className="p-2 text-white"
+            aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+            aria-expanded={menuOpen}
           >
-            Home
-          </Link>
+            {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+          </button>
 
-          {/* Events dropdown */}
-          <div className="relative" ref={dropdownRef}>
-            <button
-              onClick={() => setEventsOpen((o) => !o)}
-              className="flex items-center gap-1 text-xs font-medium transition-colors hover:text-white"
-              style={isEventsActive
-                ? { color: '#fff', borderBottom: '2px solid #f5d547', paddingBottom: '2px' }
-                : { color: 'rgba(255,255,255,0.8)' }}
+          {menuOpen && (
+            <div
+              className="absolute right-0 top-full mt-2 rounded shadow-lg py-1 z-50"
+              style={{ backgroundColor: '#fff', border: '0.5px solid #e5e7eb', minWidth: '190px' }}
             >
-              Events
-              <ChevronDown className="w-3 h-3" style={{ transform: eventsOpen ? 'rotate(180deg)' : 'none', transition: 'transform 0.15s' }} />
-            </button>
-
-            {eventsOpen && (
-              <div
-                className="absolute left-0 top-full mt-2 rounded shadow-lg py-1 z-50"
-                style={{ backgroundColor: '#fff', border: '0.5px solid #e5e7eb', minWidth: '190px' }}
-              >
-                {EVENTS_ITEMS.map((item) => (
-                  <Link
-                    key={item.to}
-                    to={item.to}
-                    onClick={() => setEventsOpen(false)}
-                    className="block px-4 py-2 text-xs font-medium transition-colors hover:bg-slate-50"
-                    style={{ color: isActive(item.to) ? '#0e1f6b' : '#555', fontWeight: isActive(item.to) ? 700 : 400 }}
-                  >
-                    {item.label}
-                  </Link>
-                ))}
-              </div>
-            )}
-          </div>
-
-
-        </nav>
-
-
-        {/* Mobile toggle */}
-        <button className="md:hidden p-2 text-white" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
-          {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-        </button>
-      </div>
-
-      {/* Mobile menu */}
-      {mobileMenuOpen && (
-        <div className="md:hidden border-t border-white/10 px-4 py-4 space-y-1" style={{ backgroundColor: '#0e1f6b' }}>
-          <Link
-            to="/"
-            onClick={() => setMobileMenuOpen(false)}
-            className="block text-sm py-2 pl-3"
-            style={{ color: isActive('/') ? '#fff' : 'rgba(255,255,255,0.7)', borderLeft: isActive('/') ? '2px solid #f5d547' : '2px solid transparent' }}
-          >
-            Home
-          </Link>
-          {EVENTS_ITEMS.map((item) => (
-            <Link
-              key={item.to}
-              to={item.to}
-              onClick={() => setMobileMenuOpen(false)}
-              className="block text-sm py-2 pl-3"
-              style={{ color: isActive(item.to) ? '#fff' : 'rgba(255,255,255,0.7)', borderLeft: isActive(item.to) ? '2px solid #f5d547' : '2px solid transparent' }}
-            >
-              {item.label}
-            </Link>
-          ))}
+              {MENU_ITEMS.map((item) => (
+                <Link
+                  key={item.to}
+                  to={item.to}
+                  onClick={() => setMenuOpen(false)}
+                  className="block px-4 py-2 text-xs font-medium transition-colors hover:bg-slate-50"
+                  style={{ color: isActive(item.to) ? '#0e1f6b' : '#555', fontWeight: isActive(item.to) ? 700 : 400 }}
+                >
+                  {item.label}
+                </Link>
+              ))}
+            </div>
+          )}
         </div>
-      )}
+      </div>
     </header>
   );
 };

@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import EventCard from '@/components/events/EventCard';
@@ -40,7 +41,12 @@ const TOP_TABS = ['All', 'Upcoming', 'Past'];
 
 const Events = () => {
   const [filters, setFilters] = useState<EventFiltersType>({});
-  const [activeTab, setActiveTab] = useState('All');
+  // The tab lives in the URL (?tab=upcoming|past) so the header menu can link straight to it
+  const [searchParams, setSearchParams] = useSearchParams();
+  const tabParam = searchParams.get('tab');
+  const activeTab = tabParam === 'upcoming' ? 'Upcoming' : tabParam === 'past' ? 'Past' : 'All';
+  const setActiveTab = (tab: string) =>
+    setSearchParams(tab === 'All' ? {} : { tab: tab.toLowerCase() });
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
 
