@@ -37,25 +37,25 @@ const EventDetailsModal = ({ event, open, onOpenChange }: EventDetailsModalProps
           <div className="flex flex-wrap items-center gap-2 mb-3">
             <span
               className="font-semibold"
-              style={{ fontSize: '9px', letterSpacing: '0.06em', textTransform: 'uppercase', padding: '2px 7px', borderRadius: '3px', backgroundColor: tag.bg, color: tag.color }}
+              style={{ fontSize: '12px', letterSpacing: '0.06em', textTransform: 'uppercase', padding: '2px 7px', borderRadius: '3px', backgroundColor: tag.bg, color: tag.color }}
             >
               {event.event_type}
             </span>
             {event.is_online && (
               <span
                 className="font-semibold flex items-center gap-1"
-                style={{ fontSize: '9px', letterSpacing: '0.06em', textTransform: 'uppercase', padding: '2px 7px', borderRadius: '3px', backgroundColor: '#e0f8f6', color: '#00796b' }}
+                style={{ fontSize: '12px', letterSpacing: '0.06em', textTransform: 'uppercase', padding: '2px 7px', borderRadius: '3px', backgroundColor: '#e0f8f6', color: '#00796b' }}
               >
                 <Globe className="w-2.5 h-2.5" /> Online
               </span>
             )}
           </div>
-          <DialogTitle style={{ fontSize: '16px', fontWeight: 700, color: '#0e1f6b', lineHeight: '1.35' }}>
+          <DialogTitle style={{ fontSize: '20px', fontWeight: 700, color: '#0e1f6b', lineHeight: '1.35' }}>
             {event.title}
           </DialogTitle>
         </DialogHeader>
 
-        <div className="space-y-2 mt-1" style={{ fontSize: '12px', color: '#555' }}>
+        <div className="space-y-2 mt-1" style={{ fontSize: '14px', color: '#555' }}>
           <div className="flex items-center gap-2">
             <Calendar className="w-3.5 h-3.5 flex-shrink-0" style={{ color: '#0e1f6b' }} />
             <span>{format(eventDate, 'EEEE, MMMM d, yyyy')}</span>
@@ -89,7 +89,7 @@ const EventDetailsModal = ({ event, open, onOpenChange }: EventDetailsModalProps
 
         {event.description && (
           <div className="pt-3 mt-1" style={{ borderTop: '0.5px solid #e5e7eb' }}>
-            <p style={{ fontSize: '12px', color: '#555', lineHeight: '1.7', whiteSpace: 'pre-wrap' }}>
+            <p style={{ fontSize: '14px', color: '#555', lineHeight: '1.7', whiteSpace: 'pre-wrap' }}>
               {event.description}
             </p>
           </div>
@@ -100,7 +100,7 @@ const EventDetailsModal = ({ event, open, onOpenChange }: EventDetailsModalProps
             {event.registration_url && (
               <a href={event.registration_url} target="_blank" rel="noopener noreferrer" className="w-full">
                 <button className="w-full flex items-center justify-center gap-2"
-                  style={{ fontSize: '11px', fontWeight: 600, padding: '8px', border: '1px solid #0e1f6b', borderRadius: '4px', background: 'transparent', color: '#0e1f6b', cursor: 'pointer' }}>
+                  style={{ fontSize: '14px', fontWeight: 600, padding: '8px', border: '1px solid #0e1f6b', borderRadius: '4px', background: 'transparent', color: '#0e1f6b', cursor: 'pointer' }}>
                   <ExternalLink className="w-3 h-3" /> Register
                 </button>
               </a>
@@ -108,7 +108,7 @@ const EventDetailsModal = ({ event, open, onOpenChange }: EventDetailsModalProps
             {event.meeting_url && (
               <a href={event.meeting_url} target="_blank" rel="noopener noreferrer" className="w-full">
                 <button className="w-full flex items-center justify-center gap-2"
-                  style={{ fontSize: '11px', fontWeight: 600, padding: '8px', border: '1px solid #00c4b4', borderRadius: '4px', background: 'transparent', color: '#00796b', cursor: 'pointer' }}>
+                  style={{ fontSize: '14px', fontWeight: 600, padding: '8px', border: '1px solid #00c4b4', borderRadius: '4px', background: 'transparent', color: '#00796b', cursor: 'pointer' }}>
                   <Globe className="w-3 h-3" /> Join Meeting
                 </button>
               </a>
@@ -116,7 +116,7 @@ const EventDetailsModal = ({ event, open, onOpenChange }: EventDetailsModalProps
             {event.event_external_url && (
               <a href={event.event_external_url} target="_blank" rel="noopener noreferrer" className="w-full">
                 <button className="w-full flex items-center justify-center gap-2"
-                  style={{ fontSize: '11px', padding: '8px', border: '1px solid #ccc', borderRadius: '4px', background: 'transparent', color: '#888', cursor: 'pointer' }}>
+                  style={{ fontSize: '14px', padding: '8px', border: '1px solid #ccc', borderRadius: '4px', background: 'transparent', color: '#888', cursor: 'pointer' }}>
                   <ExternalLink className="w-3 h-3" /> Event Page
                 </button>
               </a>

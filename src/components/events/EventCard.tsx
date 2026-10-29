@@ -31,10 +31,10 @@ const EventCard = ({ event, onViewDetails }: EventCardProps) => {
     <div className="flex items-stretch border-b py-4 group" style={{ borderColor: '#e5e7eb' }}>
       {/* Date column */}
       <div className="flex-shrink-0 w-11 flex flex-col items-center justify-start pt-0.5 mr-4">
-        <span className="leading-none" style={{ fontSize: '9px', letterSpacing: '0.08em', textTransform: 'uppercase', color: '#aaa' }}>
+        <span className="leading-none" style={{ fontSize: '12px', letterSpacing: '0.08em', textTransform: 'uppercase', color: '#aaa' }}>
           {format(eventDate, 'MMM')}
         </span>
-        <span className="font-bold leading-none mt-0.5" style={{ fontSize: '26px', color: '#0e1f6b' }}>
+        <span className="font-bold leading-none mt-0.5" style={{ fontSize: '34px', color: '#0e1f6b' }}>
           {format(eventDate, 'd')}
         </span>
       </div>
@@ -48,14 +48,14 @@ const EventCard = ({ event, onViewDetails }: EventCardProps) => {
         <div className="flex flex-wrap gap-1 mb-1">
           <span
             className="font-semibold"
-            style={{ fontSize: '9px', letterSpacing: '0.06em', textTransform: 'uppercase', padding: '2px 7px', borderRadius: '3px', backgroundColor: cfg.tagBg, color: cfg.tagText }}
+            style={{ fontSize: '12px', letterSpacing: '0.06em', textTransform: 'uppercase', padding: '2px 7px', borderRadius: '3px', backgroundColor: cfg.tagBg, color: cfg.tagText }}
           >
             {event.event_type}
           </span>
           {event.organizer && (
             <span
               className="font-semibold"
-              style={{ fontSize: '9px', letterSpacing: '0.06em', textTransform: 'uppercase', padding: '2px 7px', borderRadius: '3px', backgroundColor: '#e8ecf7', color: '#0e1f6b' }}
+              style={{ fontSize: '12px', letterSpacing: '0.06em', textTransform: 'uppercase', padding: '2px 7px', borderRadius: '3px', backgroundColor: '#e8ecf7', color: '#0e1f6b' }}
             >
               {event.organizer}
             </span>
@@ -65,14 +65,14 @@ const EventCard = ({ event, onViewDetails }: EventCardProps) => {
         {/* Title */}
         <div
           className="font-semibold leading-snug mb-1 cursor-pointer"
-          style={{ fontSize: '14px', color: '#0e1f6b', lineHeight: '1.35' }}
+          style={{ fontSize: '18px', color: '#0e1f6b', lineHeight: '1.35' }}
           onClick={() => onViewDetails?.(event)}
         >
           {event.title}
         </div>
 
         {/* Meta */}
-        <div className="mb-2" style={{ fontSize: '11px', color: '#888', lineHeight: '1.5' }}>
+        <div className="mb-2" style={{ fontSize: '14px', color: '#888', lineHeight: '1.5' }}>
           {timeStr}{endStr}
           {event.location && <span> · {event.location}</span>}
           {event.speaker && <span> · {event.speaker}</span>}
@@ -83,7 +83,7 @@ const EventCard = ({ event, onViewDetails }: EventCardProps) => {
           {onViewDetails && (
             <button
               onClick={() => onViewDetails(event)}
-              style={{ fontSize: '10px', padding: '4px 10px', border: '1px solid #ccc', borderRadius: '4px', background: 'transparent', color: '#888', cursor: 'pointer' }}
+              style={{ fontSize: '13px', padding: '4px 10px', border: '1px solid #ccc', borderRadius: '4px', background: 'transparent', color: '#888', cursor: 'pointer' }}
             >
               Details
             </button>
@@ -91,7 +91,7 @@ const EventCard = ({ event, onViewDetails }: EventCardProps) => {
           {event.registration_url && (
             <a href={event.registration_url} target="_blank" rel="noopener noreferrer">
               <button
-                style={{ fontSize: '10px', padding: '4px 10px', border: '1px solid #0e1f6b', borderRadius: '4px', background: 'transparent', color: '#0e1f6b', fontWeight: 600, cursor: 'pointer' }}
+                style={{ fontSize: '13px', padding: '4px 10px', border: '1px solid #0e1f6b', borderRadius: '4px', background: 'transparent', color: '#0e1f6b', fontWeight: 600, cursor: 'pointer' }}
               >
                 Register
               </button>
@@ -100,7 +100,7 @@ const EventCard = ({ event, onViewDetails }: EventCardProps) => {
           {event.meeting_url && !event.registration_url && (
             <a href={event.meeting_url} target="_blank" rel="noopener noreferrer">
               <button
-                style={{ fontSize: '10px', padding: '4px 10px', border: '1px solid #0e1f6b', borderRadius: '4px', background: 'transparent', color: '#0e1f6b', fontWeight: 600, cursor: 'pointer' }}
+                style={{ fontSize: '13px', padding: '4px 10px', border: '1px solid #0e1f6b', borderRadius: '4px', background: 'transparent', color: '#0e1f6b', fontWeight: 600, cursor: 'pointer' }}
               >
                 Join
               </button>

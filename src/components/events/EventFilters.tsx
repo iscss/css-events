@@ -40,7 +40,7 @@ const EventFilters = ({ filters, onFiltersChange }: EventFiltersProps) => {
   return (
     <div className="space-y-6">
       <div>
-        <p className="font-semibold mb-2" style={{ fontSize: '9px', letterSpacing: '0.1em', textTransform: 'uppercase', color: '#aaa' }}>
+        <p className="font-semibold mb-2" style={{ fontSize: '12px', letterSpacing: '0.1em', textTransform: 'uppercase', color: '#aaa' }}>
           Event type
         </p>
         <div className="space-y-2">
@@ -48,13 +48,13 @@ const EventFilters = ({ filters, onFiltersChange }: EventFiltersProps) => {
             const checked = (filters.eventTypes ?? []).includes(label);
             return (
               <label key={label} className="flex items-center gap-2 cursor-pointer">
-                <span className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ backgroundColor: color }} />
-                <span className="flex-1" style={{ fontSize: '11px', color: '#555' }}>{label}</span>
+                <span className="w-3 h-3 rounded-full flex-shrink-0" style={{ backgroundColor: color }} />
+                <span className="flex-1" style={{ fontSize: '14px', color: '#555' }}>{label}</span>
                 <input
                   type="checkbox"
                   checked={checked}
                   onChange={() => toggleEventType(label)}
-                  className="w-3.5 h-3.5 accent-slate-700"
+                  className="w-4 h-4 accent-slate-700"
                 />
               </label>
             );
@@ -63,19 +63,19 @@ const EventFilters = ({ filters, onFiltersChange }: EventFiltersProps) => {
       </div>
 
       <div>
-        <p className="font-semibold mb-2" style={{ fontSize: '9px', letterSpacing: '0.1em', textTransform: 'uppercase', color: '#aaa' }}>
+        <p className="font-semibold mb-2" style={{ fontSize: '12px', letterSpacing: '0.1em', textTransform: 'uppercase', color: '#aaa' }}>
           Event format
         </p>
         <div className="space-y-2">
           {EVENT_FORMATS.map(({ label, color }) => (
             <label key={label} className="flex items-center gap-2 cursor-pointer">
-              <span className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ backgroundColor: color }} />
-              <span className="flex-1" style={{ fontSize: '11px', color: '#555' }}>{label}</span>
+              <span className="w-3 h-3 rounded-full flex-shrink-0" style={{ backgroundColor: color }} />
+              <span className="flex-1" style={{ fontSize: '14px', color: '#555' }}>{label}</span>
               <input
                 type="checkbox"
                 checked={(filters.formats ?? []).includes(label)}
                 onChange={() => toggleFormat(label)}
-                className="w-3.5 h-3.5 accent-slate-700"
+                className="w-4 h-4 accent-slate-700"
               />
             </label>
           ))}

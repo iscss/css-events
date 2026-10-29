@@ -30,32 +30,33 @@ const Header = () => {
   return (
     <header className="sticky top-0 z-50 w-full" style={{ backgroundColor: '#0e1f6b' }}>
       <div style={{ height: '3px', backgroundColor: '#f5d547' }} />
-      <div className="container mx-auto px-6 flex items-center justify-between" style={{ height: '49px' }}>
-        <Link to="/" className="font-bold tracking-widest text-white" style={{ fontSize: '15px' }}>
-          ISCSS
+      <div className="px-8 flex items-center justify-between" style={{ height: '64px' }}>
+        <Link to="/" className="flex items-baseline gap-3">
+          <span className="font-bold tracking-widest text-white" style={{ fontSize: '22px' }}>ISCSS</span>
+          <span className="font-medium text-white/80" style={{ fontSize: '16px' }}>Events</span>
         </Link>
 
         <div className="relative" ref={menuRef}>
           <button
             onClick={() => setMenuOpen((o) => !o)}
-            className="p-2 text-white"
+            className="p-2 -mr-2 text-white"
             aria-label={menuOpen ? 'Close menu' : 'Open menu'}
             aria-expanded={menuOpen}
           >
-            {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            {menuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
 
           {menuOpen && (
             <div
               className="absolute right-0 top-full mt-2 rounded shadow-lg py-1 z-50"
-              style={{ backgroundColor: '#fff', border: '0.5px solid #e5e7eb', minWidth: '190px' }}
+              style={{ backgroundColor: '#fff', border: '0.5px solid #e5e7eb', minWidth: '220px' }}
             >
               {MENU_ITEMS.map((item) => (
                 <Link
                   key={item.to}
                   to={item.to}
                   onClick={() => setMenuOpen(false)}
-                  className="block px-4 py-2 text-xs font-medium transition-colors hover:bg-slate-50"
+                  className="block px-5 py-3 text-base font-medium transition-colors hover:bg-slate-50"
                   style={{ color: isActive(item.to) ? '#0e1f6b' : '#555', fontWeight: isActive(item.to) ? 700 : 400 }}
                 >
                   {item.label}

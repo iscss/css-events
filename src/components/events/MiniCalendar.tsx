@@ -42,7 +42,7 @@ const MiniCalendar = ({ selectedDate, highlightedDates = [], onSelectDate }: Min
     <div className="select-none">
       {/* Month navigation */}
       <div className="flex items-center justify-between mb-3">
-        <span className="text-xs font-semibold" style={{ color: '#0e1f6b' }}>
+        <span className="text-base font-semibold" style={{ color: '#0e1f6b' }}>
           {format(viewMonth, 'MMMM yyyy')}
         </span>
         <div className="flex items-center gap-1">
@@ -50,13 +50,13 @@ const MiniCalendar = ({ selectedDate, highlightedDates = [], onSelectDate }: Min
             onClick={() => setViewMonth(subMonths(viewMonth, 1))}
             className="p-0.5 rounded hover:bg-slate-100 text-slate-500"
           >
-            <ChevronLeft className="w-3.5 h-3.5" />
+            <ChevronLeft className="w-4 h-4" />
           </button>
           <button
             onClick={() => setViewMonth(addMonths(viewMonth, 1))}
             className="p-0.5 rounded hover:bg-slate-100 text-slate-500"
           >
-            <ChevronRight className="w-3.5 h-3.5" />
+            <ChevronRight className="w-4 h-4" />
           </button>
         </div>
       </div>
@@ -64,7 +64,7 @@ const MiniCalendar = ({ selectedDate, highlightedDates = [], onSelectDate }: Min
       {/* Day-of-week headers */}
       <div className="grid grid-cols-7 mb-1">
         {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((d, i) => (
-          <div key={i} className="text-center text-[10px] font-medium text-slate-400 py-0.5">
+          <div key={i} className="text-center text-xs font-medium text-slate-400 py-0.5">
             {d}
           </div>
         ))}
@@ -87,7 +87,7 @@ const MiniCalendar = ({ selectedDate, highlightedDates = [], onSelectDate }: Min
             <button
               key={day.toISOString()}
               onClick={() => handleDayClick(day)}
-              className="relative text-center text-xs rounded-full mx-auto w-5 h-5 flex items-center justify-center leading-none transition-colors"
+              className="relative text-center text-sm rounded-full mx-auto w-7 h-7 flex items-center justify-center leading-none transition-colors"
               style={{
                 backgroundColor: selected ? '#0e1f6b' : today && !selected ? '#00c4b4' : 'transparent',
                 color: selected || (today && !selected) ? '#fff' : !inMonth ? '#ccc' : highlighted ? '#0e1f6b' : '#aaa',

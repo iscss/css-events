@@ -151,15 +151,15 @@ const Events = () => {
       <main className="main-content">
         {/* Page header */}
         <div className="border-b border-slate-100 px-8 pt-8 pb-6">
-          <p className="font-semibold mb-2" style={{ fontSize: '10px', letterSpacing: '0.12em', textTransform: 'uppercase', color: '#888' }}>
+          <p className="font-semibold mb-2" style={{ fontSize: '13px', letterSpacing: '0.12em', textTransform: 'uppercase', color: '#888' }}>
             Lab Events
           </p>
-          <h1 className="text-3xl font-bold mb-1" style={{ color: '#0e1f6b' }}>
+          <h1 className="text-5xl font-bold mb-2" style={{ color: '#0e1f6b' }}>
             Talks, Workshops{' '}
             <span style={{ color: '#00c4b4' }}>&amp;</span>{' '}
             <span style={{ color: '#00c4b4' }}>Seminars</span>
           </h1>
-          <p style={{ fontSize: '13px', color: '#666' }}>
+          <p style={{ fontSize: '16px', color: '#666' }}>
             Advancing data-driven research in the social sciences — talks, workshops, and reading groups from ISCSS members worldwide.
           </p>
 
@@ -170,7 +170,7 @@ const Events = () => {
                 <button
                   key={tab}
                   onClick={() => setActiveTab(tab)}
-                  className="px-4 py-1 rounded-full text-xs font-medium border transition-colors"
+                  className="px-5 py-1.5 rounded-full text-sm font-medium border transition-colors"
                   style={activeTab === tab
                     ? { backgroundColor: '#0e1f6b', color: '#fff', borderColor: '#0e1f6b' }
                     : { backgroundColor: 'transparent', color: '#0e1f6b', borderColor: '#0e1f6b' }}
@@ -184,9 +184,9 @@ const Events = () => {
 
 
         {/* Body: sidebar + event list */}
-        <div className="flex">
+        <div className="flex flex-col md:flex-row">
           {/* Left sidebar */}
-          <aside className="w-52 flex-shrink-0 border-r border-slate-100 px-4 py-6 space-y-6">
+          <aside className="w-full md:w-64 flex-shrink-0 border-b md:border-b-0 md:border-r border-slate-100 px-4 py-6 space-y-6">
             {/* Mini calendar */}
             <MiniCalendar
               selectedDate={selectedDate}
@@ -203,7 +203,7 @@ const Events = () => {
             {appliedFilters.length > 0 && (
               <div
                 className="flex items-center justify-between gap-3 rounded px-3 py-2 mb-2"
-                style={{ backgroundColor: '#f4f6fb', border: '0.5px solid #d9deea', fontSize: '12px', color: '#0e1f6b' }}
+                style={{ backgroundColor: '#f4f6fb', border: '0.5px solid #d9deea', fontSize: '14px', color: '#0e1f6b' }}
               >
                 <span>
                   <strong>Filtered:</strong> {appliedFilters.join(' · ')}
@@ -226,7 +226,7 @@ const Events = () => {
             ) : filtered.length > 0 ? (
               groupedByMonth.map(({ label, events: monthEvents }) => (
                 <div key={label}>
-                  <p className="font-semibold pt-3 pb-2 mb-2" style={{ fontSize: '10px', letterSpacing: '0.1em', textTransform: 'uppercase', color: '#aaa', borderBottom: '0.5px solid #e5e7eb' }}>
+                  <p className="font-semibold pt-3 pb-2 mb-2" style={{ fontSize: '13px', letterSpacing: '0.1em', textTransform: 'uppercase', color: '#aaa', borderBottom: '0.5px solid #e5e7eb' }}>
                     {label}
                   </p>
                   {monthEvents.map((event) => (
@@ -237,8 +237,8 @@ const Events = () => {
             ) : (
               <div className="text-center py-24">
                 <Calendar className="w-12 h-12 text-slate-300 mx-auto mb-3" />
-                <h3 className="text-base font-semibold text-slate-700 mb-1">No events found</h3>
-                <p className="text-sm text-slate-500">
+                <h3 className="text-xl font-semibold text-slate-700 mb-1">No events found</h3>
+                <p className="text-base text-slate-500">
                   {appliedFilters.length > 0
                     ? 'Try adjusting your filters.'
                     : 'Check back soon for upcoming events.'}
