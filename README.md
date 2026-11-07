@@ -1,226 +1,131 @@
-# CSS Events - Computational Social Science Events
+# CSS Events: Computational Social Science Events
 
-**Production URL:** https://events.iscss.org
-**Sister site:** [CSS Jobs](https://jobs.iscss.org) (https://github.com/iscss/css-jobs)
+> ## ⏸️ Status: PAUSED (November 2026)
+> The live site **events.iscss.org is paused** (Vercel project paused at the lab's request). The project is on hold and may be picked up later. Nothing was deleted: all code is on GitHub and the database is untouched.
+> **To resume:** see [docs/BRANCHES-AND-STATUS.md](docs/BRANCHES-AND-STATUS.md).
+
+**Sister site:** [CSS Jobs](https://jobs.iscss.org) · https://github.com/iscss/css-jobs
 **Accounts:** Vercel and Supabase are under `admin@iscss.org`
+**Supabase project:** `ukkqeczgommifgecyrez`, **shared with the CSS Jobs board**
 
-> This app was scaffolded from CSS Jobs and shares the same Supabase backend. The CSS Jobs repo contains a detailed `HANDOVER.md` written in December 2025 that covers the shared infrastructure (Supabase auth, user profiles, admin system, RLS policies, deployment patterns) in depth. Everything described there about the shared pieces (auth, user_profiles, admin checks) applies here as well. The key difference is that CSS Events has no approval workflow — admins post events directly — and the `events` table is specific to this app.
+An events listing site for the Computational Social Science community. Visitors browse upcoming and past events and filter them. There is no approval workflow.
 
 ---
 
-## Quick Start
+## Documentation: start here
+
+| Read this | For |
+|---|---|
+| [docs/BRANCHES-AND-STATUS.md](docs/BRANCHES-AND-STATUS.md) | The two branches (`main` vs `redesign-events-pages`), what's different, **how to un-pause the site**, how to go live with the redesign |
+| [docs/ADDING-EVENTS.md](docs/ADDING-EVENTS.md) | **How to add, edit, hide, and delete events**; Online / In-Person / Hybrid rules |
+| [docs/DESIGN-GUIDE.md](docs/DESIGN-GUIDE.md) | Fonts, colors, text sizes, layout, components, hard-coded content |
+| [docs/LOCAL-DEMO.md](docs/LOCAL-DEMO.md) | Running locally; a local test database with sample events (never test on the live database) |
+| [docs/FUTURE-IDEAS.md](docs/FUTURE-IDEAS.md) | Event automation plan, jobs board redesign mockups, known gaps |
+
+---
+
+## Branches at a glance
+
+- **`main`**: the version that was live. Has a Home page, an Events page, and an `/admin` page with sign-in for adding events.
+- **`redesign-events-pages`**: the redesign, **never deployed**. Opens directly on the Events page, a ≡ menu with Upcoming / Past Events, Event format filter, URL-based filters, larger text. No admin or sign-in pages: events are added in the Supabase dashboard.
+
+Vercel deploys from `main`, so nothing in `redesign-events-pages` is public until it is merged.
+
+---
+
+## Quick start
 
 ```bash
-# Install dependencies
 npm install
-
-# Set up environment
-cp .env.example .env
-# Add your Supabase credentials to .env
-
-# Start development server
-npm run dev
-# Opens at http://localhost:8081
-
-# Build for production
-npm run build
+cp .env.example .env.local   # add the Supabase URL and anon key
+npm run dev                  # http://localhost:8081
+npm run build                # production build
 ```
 
----
-
-## What This Application Does
-
-An events listing site for the **Computational Social Science** community. Sister site to [CSS Jobs](https://jobs.iscss.org) — same Supabase project, same auth, same admin users.
-
-- **Public visitors:** Browse upcoming events, filter by type/format, view event details
-- **Admins:** Add, edit, publish/unpublish, and delete events directly in the Supabase dashboard (no admin pages on the site, no approval workflow)
-
-### Event Types
-
-Q&A, Workshop, Seminar, Conference, Social, Other
-
----
-
-## Tech Stack
-
-| Layer | Technology |
-|-------|-----------|
-| **Frontend** | React 18 + TypeScript + Vite |
-| **UI** | Tailwind CSS + shadcn/ui + Radix UI |
-| **Backend** | Supabase (PostgreSQL + Auth) |
-| **State** | React Query (@tanstack/react-query) |
-| **Routing** | React Router v6 |
-| **Security** | DOMPurify + Row-Level Security (RLS) |
-| **Hosting** | Vercel (frontend) + Supabase Cloud (backend) |
-
----
-
-## Project Structure
-
-```
-css-events/
-├── src/
-│   ├── pages/              # Route pages (Index, Events, PastEvents, About, Contact, NotFound)
-│   ├── components/
-│   │   ├── events/         # EventCard, EventDetailsModal, EventFilters
-│   │   ├── layout/         # Header, Footer
-│   │   └── ui/             # shadcn/ui components (shared with css-jobs)
-│   ├── hooks/              # useEvents (read-only)
-│   ├── integrations/       # Supabase client + types
-│   └── lib/                # Utilities (sanitize, utils)
-├── supabase/
-│   └── migrations/         # SQL migrations for events table
-├── public/                 # Static assets (team photos, favicon)
-└── vercel.json             # Deployment config with security headers
-```
-
----
-
-## Relationship to CSS Jobs
-
-CSS Events shares the **same Supabase project** as CSS Jobs (`ukkqeczgommifgecyrez`). This means:
-
-- **Same project:** This site has no sign-in of its own; the shared auth tables are used by CSS Jobs
-- **Same `user_profiles` table:** Still used by the database's admin-only permissions on `events`
-- **Separate `events` table:** Events data is independent from jobs data
-- **Separate codebase:** UI components were copied (not shared) so the two apps can diverge independently
-
----
-
-## Environment Variables
-
-Required in `.env` (and in Vercel dashboard):
+Environment variables (`.env.local`, and the Vercel dashboard for deployment):
 
 ```env
 VITE_SUPABASE_URL=https://ukkqeczgommifgecyrez.supabase.co
-VITE_SUPABASE_ANON_KEY=<your_anon_key>
+VITE_SUPABASE_ANON_KEY=<anon key from Supabase dashboard → Settings → API>
 ```
 
-These are public/client-safe keys. Get them from: [Supabase Dashboard](https://supabase.com/dashboard/project/ukkqeczgommifgecyrez) > Settings > API
+These are public, read-only keys. Vite bakes `VITE_*` variables into the build, so **redeploy after changing them in Vercel**. For demos with sample events use a local database: see [docs/LOCAL-DEMO.md](docs/LOCAL-DEMO.md).
 
-**Important:** Vite bakes `VITE_*` variables into the bundle at build time. If you add or change them in Vercel, you must redeploy for changes to take effect.
+---
+
+## Tech stack
+
+| Layer | Technology |
+|-------|-----------|
+| Frontend | React 18 + TypeScript + Vite |
+| UI | Tailwind CSS + shadcn/ui + Radix UI |
+| Data | Supabase (PostgreSQL) |
+| State | React Query (`@tanstack/react-query`) |
+| Routing | React Router v6 |
+| Security | DOMPurify + Row-Level Security |
+| Hosting | Vercel (frontend) + Supabase Cloud (database) |
+
+---
+
+## Project structure (`redesign-events-pages`)
+
+```
+css-events/
+├── docs/                    # Handover documentation (see above)
+├── src/
+│   ├── pages/               # Events (home), PastEvents, About, Contact, NotFound
+│   ├── components/
+│   │   ├── events/          # EventCard, EventDetailsModal, EventFilters, MiniCalendar
+│   │   ├── layout/          # Header (ISCSS Events + ≡ menu), Footer
+│   │   └── ui/              # shadcn/ui components
+│   ├── hooks/useEvents.ts   # Reads published events (read-only, cached 5 min)
+│   ├── lib/                 # eventFormat (Online/In-Person/Hybrid), sanitize, utils
+│   ├── data/                # IC²S² conference history
+│   └── integrations/        # Supabase client + generated types
+├── supabase/migrations/     # SQL for the events table
+├── public/                  # favicon, team photos
+└── vercel.json              # Deployment config + security headers
+```
+
+### Routes
+
+| Route | Page |
+|---|---|
+| `/` | Events page (home). Filters live in the URL: `?tab=upcoming\|past`, `?date=YYYY-MM-DD`, `?type=`, `?format=` |
+| `/events` | Redirects to `/` |
+| `/past-events`, `/about`, `/contact` | Exist, but not linked from the menu |
 
 ---
 
 ## Database
 
-### Events Table
+Table `events`: `id`, `title`, `description`, `event_date`, `end_date`, `event_type` (Q&A / Workshop / Seminar / Conference / Social / Other), `location`, `is_online`, `event_external_url`, `meeting_url`, `registration_url`, `speaker`, `organizer`, `is_published`, `posted_by`, `created_at`, `updated_at`. Full details and how to add events: [docs/ADDING-EVENTS.md](docs/ADDING-EVENTS.md).
 
-| Column | Type | Description |
-|--------|------|-------------|
-| `id` | UUID (PK) | Auto-generated |
-| `title` | text | Event title |
-| `description` | text | Longer details |
-| `event_date` | timestamptz | Start date/time |
-| `end_date` | timestamptz | Optional end time |
-| `event_type` | enum | Q&A, Workshop, Seminar, Conference, Social, Other |
-| `location` | text | Physical location or "Online" |
-| `is_online` | boolean | Whether the event is virtual |
-| `event_external_url` | text | External page describing the event |
-| `meeting_url` | text | Zoom/Teams link |
-| `registration_url` | text | Registration page |
-| `speaker` | text | Speaker name(s) |
-| `organizer` | text | Organizing group or person |
-| `is_published` | boolean | Visible to public when true |
-| `posted_by` | UUID (FK) | References `user_profiles.id` |
-| `created_at` | timestamptz | Auto-set |
-| `updated_at` | timestamptz | Auto-updated via trigger |
+**Row-Level Security:** the public can read **published** events only. Writes are limited to admins; the Supabase dashboard bypasses RLS.
 
-### Row-Level Security (RLS)
-
-- **Public:** Can read published events
-- **Admins:** Manage events in the Supabase dashboard (which bypasses RLS)
-
-### Migrations
-
-Migrations live in `supabase/migrations/`. To apply:
+Migrations are in `supabase/migrations/`:
 
 ```bash
-# Link to the Supabase project (one-time)
-npx supabase link --project-ref ukkqeczgommifgecyrez
-
-# Push migrations
-npx supabase db push
+npx supabase link --project-ref ukkqeczgommifgecyrez   # one-time
+npx supabase migration new description_here            # create
+npx supabase db push                                   # apply to the live database
+npx supabase gen types typescript --project-id ukkqeczgommifgecyrez > src/integrations/supabase/types.ts
 ```
 
-**Note:** This project shares a Supabase instance with css-jobs. Both projects have their own local migration files. The remote migration history tracks all migrations from both projects.
-
----
-
-## Pages & Routes
-
-| Route | Page | Description |
-|-------|------|-------------|
-| `/` | Home | Hero section + next 6 upcoming events |
-| `/events` | Events | Full listing with search, type, and online/in-person filters |
-
----
-
-## Adding and Editing Events
-
-The site has no admin pages or sign-in. Events are managed directly in the Supabase dashboard (account: `admin@iscss.org`).
-
-1. Open the Supabase dashboard and go to **Table Editor → events**
-2. Click **Insert → Insert row** (or click a cell to edit an existing row)
-3. Fill in the fields below and save
-4. The event appears on the site within ~5 minutes (the site caches the event list)
-
-| Column | Notes |
-|--------|-------|
-| `title` | Required |
-| `event_date` | Required. Start date/time. Enter in UTC (e.g. `2026-11-05 15:00:00+00`) |
-| `event_type` | Required. One of: `Q&A`, `Workshop`, `Seminar`, `Conference`, `Social`, `Other` |
-| `description`, `speaker`, `organizer`, `location` | Optional text |
-| `end_date` | Optional |
-| `is_online` | `true` for virtual events |
-| `event_external_url`, `meeting_url`, `registration_url` | Optional links (event page, Zoom/meeting link, sign-up) |
-| `is_published` | **Must be `true` for the event to show.** Default is `false` (draft) |
-
-**Format filter:** the site shows Online / In-Person / Hybrid. There's no separate column for it. `is_online = false` means In-Person; `is_online = true` with a location like "Online (Zoom)" means Online; `is_online = true` with a real place in `location` (e.g. "Room 301, Penn") means Hybrid.
-
-Leave `id`, `created_at`, `updated_at`, and `posted_by` blank. To hide or remove an event, set `is_published` to `false` or delete the row.
-
-Row-Level Security on the `events` table means the public site can only read published events. Dashboard edits are not affected by it.
+The Supabase project is shared with css-jobs, so its migration history contains both projects' migrations. **Check both sites before changing shared tables.**
 
 ---
 
 ## Deployment
 
-### Frontend (Vercel)
-
-- Auto-deploys from `main` branch on GitHub (`iscss/css-events`)
-- Environment variables must be set in Vercel dashboard
-- Account: `admin@iscss.org`
-
-### Database (Supabase)
-
-```bash
-# Create a new migration
-npx supabase migration new description_here
-
-# Edit the generated SQL file in supabase/migrations/
-
-# Apply to production
-npx supabase db push
-
-# Regenerate TypeScript types (if schema changed)
-npx supabase gen types typescript --project-id ukkqeczgommifgecyrez > src/integrations/supabase/types.ts
-```
-
-### Development
-
-```bash
-npm run dev      # Start dev server (port 8081)
-npm run build    # Production build
-npx tsc --noEmit # Type check
-npx vitest run   # Run tests
-```
+- **Frontend:** Vercel, auto-deploys from `main` on `iscss/css-events`. Account `admin@iscss.org`. Environment variables are set in the Vercel dashboard.
+- **Currently paused.** Resume in Vercel → project → **Resume**; see [docs/BRANCHES-AND-STATUS.md](docs/BRANCHES-AND-STATUS.md).
 
 ---
 
 ## Security
 
-- **Input sanitization** via DOMPurify (`src/lib/sanitize.ts`) — all user inputs sanitized before storage, URLs auto-prefixed with `https://` if no protocol provided
-- **Row-Level Security** on the `events` table — public reads published only, admin CRUD
-- **Content Security Policy** headers in both `vercel.json` (production) and `vite.config.ts` (development)
-- **CORS:** Supabase client connects only to the project's own endpoint
+- Input sanitization via DOMPurify (`src/lib/sanitize.ts`)
+- Row-Level Security on `events` (public reads published rows only)
+- Content Security Policy: `vercel.json` (production) and `vite.config.ts` (development only)
+- The site contains no secrets: only the public anon key. Keep any future API keys (e.g. for event automation) in Supabase secrets, never in website code.
