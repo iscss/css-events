@@ -102,4 +102,4 @@ Card colors are in `TYPE_CONFIG` in `src/components/events/EventCard.tsx`; sideb
 
 ## Matching the iscss.org look (reference)
 
-The main iscss.org site uses a white header, a bold black "ISCSS" wordmark, gray nav links with a blue active state (about `#4a9fe0`), a teal frame (about `#3d7b8a`) around page titles, and a faint network graphic. The events site uses a navy and gold header instead. Mockups that tried a lighter header for the **jobs board** (three options) are described in `FUTURE-IDEAS.md`.
+The main iscss.org site uses a white header, a bold black "ISCSS" wordmark, gray nav links with a blue active state (about `#4a9fe0`), a teal frame (about `#3d7b8a`) around page titles, and a faint network graphic. The events site uses a navy and gold header instead.

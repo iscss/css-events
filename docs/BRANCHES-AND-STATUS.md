@@ -41,8 +41,8 @@ Run `git log origin/main..origin/redesign-events-pages --oneline` to see the ful
 
 The project is on Vercel under the `admin@iscss.org` account.
 
-1. Sign in to Vercel as `admin@iscss.org`, open the **css-events** project.
-2. The project shows as paused. Press **Resume** (in **Settings**, or the banner at the top).
+1. Sign in to Vercel as `admin@iscss.org`.
+2. Go to **Projects → css-events → Settings → General → Pause Project** and press **Resume Project**.
 3. Check https://events.iscss.org loads. This brings back whatever was last deployed, which is the **old `main` version** (with Home, Admin, sign-in).
 
 If the domain stopped working, check **Settings → Domains** that `events.iscss.org` is attached.

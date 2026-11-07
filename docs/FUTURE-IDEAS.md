@@ -18,17 +18,7 @@ Needs: a few extra columns on `events` (`source`, `is_auto_imported`, relevance 
 
 **Source discovery (later, optional).** A weekly job could suggest new sources (links from known sites, search queries, aggregator sites) into the sources table with a `candidate` status for a person to approve. A tool can suggest sources but a person must approve them: scraping permission, reliability and scope are human judgments. Build the importer with a hand-picked list first.
 
-## 2. Jobs board redesign (separate repo: `iscss/css-jobs`)
-
-The jobs board has a navy header like the events site. Three lighter, white-header mockups were made, taking cues from iscss.org:
-
-- **A, iscss.org classic:** white header, big bold ISCSS wordmark, teal frame around the page title (like the About page), blue active link.
-- **B, light + events tie-in:** white header with a gold stripe and navy wordmark, search banner, filter pills, cards with a colored left edge by job type (matches the events site).
-- **C, split view:** job list on the left, full details of the selected job on the right, faint network graphic in the title area.
-
-The mockup images (PNG) and HTML source are on Ritika's computer at `~/Documents/css-jobs/mockups/` (not in git). Alex was asked which one he prefers. Mockup colors were estimated by eye from an iscss.org screenshot (teal about `#3d7b8a`, link blue about `#4a9fe0`).
-
-## 3. Known gaps and loose ends on `redesign-events-pages`
+## 2. Known gaps and loose ends on `redesign-events-pages`
 
 - **IC²S² 2026 is hard-coded** in `src/pages/Events.tsx` and will always show as a (now past) conference there. Add it to the database as a `Conference` and delete the `UPCOMING_IC2S2` block.
 - **About, Contact, and Past Events pages are not linked** from the menu (they still work at `/about`, `/contact`, `/past-events`). The Past Events page lists only conferences (database `Conference` events that have passed, plus a built-in IC²S² 2020–2025 list). Decide whether to link them, merge them into the Past view, or delete them.

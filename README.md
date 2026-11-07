@@ -20,7 +20,7 @@ An events listing site for the Computational Social Science community. Visitors 
 | [docs/ADDING-EVENTS.md](docs/ADDING-EVENTS.md) | **How to add, edit, hide, and delete events**; Online / In-Person / Hybrid rules |
 | [docs/DESIGN-GUIDE.md](docs/DESIGN-GUIDE.md) | Fonts, colors, text sizes, layout, components, hard-coded content |
 | [docs/LOCAL-DEMO.md](docs/LOCAL-DEMO.md) | Running locally; a local test database with sample events (never test on the live database) |
-| [docs/FUTURE-IDEAS.md](docs/FUTURE-IDEAS.md) | Event automation plan, jobs board redesign mockups, known gaps |
+| [docs/FUTURE-IDEAS.md](docs/FUTURE-IDEAS.md) | Event automation plan, known gaps |
 
 ---
 
@@ -119,7 +119,7 @@ The Supabase project is shared with css-jobs, so its migration history contains 
 ## Deployment
 
 - **Frontend:** Vercel, auto-deploys from `main` on `iscss/css-events`. Account `admin@iscss.org`. Environment variables are set in the Vercel dashboard.
-- **Currently paused.** Resume in Vercel → project → **Resume**; see [docs/BRANCHES-AND-STATUS.md](docs/BRANCHES-AND-STATUS.md).
+- **Currently paused.** Resume in Vercel: **Projects → css-events → Settings → General → Pause Project → Resume Project**. See [docs/BRANCHES-AND-STATUS.md](docs/BRANCHES-AND-STATUS.md).
 
 ---
 
